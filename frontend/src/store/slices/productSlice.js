@@ -37,12 +37,25 @@ export const fetchCategories = createAsyncThunk(
   }
 )
 
+export const fetchBanners = createAsyncThunk(
+  'products/fetchBanners',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await api.get('/products/banners/')
+      return response.data
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message)
+    }
+  }
+)
+
 const productSlice = createSlice({
   name: 'products',
   initialState: {
     products: [],
     product: null,
     categories: [],
+    banners: [],
     loading: false,
     error: null,
     pagination: null,
@@ -85,6 +98,13 @@ const productSlice = createSlice({
       .addCase(fetchCategories.rejected, (state, action) => {
         state.error = action.payload
         state.categories = []
+      })
+      .addCase(fetchBanners.fulfilled, (state, action) => {
+        state.banners = Array.isArray(action.payload) ? action.payload : []
+      })
+      .addCase(fetchBanners.rejected, (state, action) => {
+        state.error = action.payload
+        state.banners = []
       })
   },
 })

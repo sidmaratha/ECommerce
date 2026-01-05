@@ -1,6 +1,28 @@
 from rest_framework import serializers
-from .models import Category, Product, ProductImage, ProductReview
+from .models import Category, Product, ProductImage, ProductReview, Banner
 from apps.users.serializers import UserSerializer
+
+
+class BannerSerializer(serializers.ModelSerializer):
+    """Serializer for Banner model."""
+    image_url = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Banner
+        fields = ['id', 'title', 'subtitle', 'image', 'image_url', 'link', 
+                  'button_text', 'is_active', 'banner_order', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at']
+    
+    def get_image_url(self, obj):
+        request = self.context.get('request')
+        if obj.image:
+            if request:
+                return request.build_absolute_uri(obj.image.url)
+            return obj.image.url
+        # Return placeholder image if no image is set
+        if request:
+            return request.build_absolute_uri('/static/images/placeholder-banner.jpg')
+        return '/static/images/placeholder-banner.jpg'
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -19,11 +41,23 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class ProductImageSerializer(serializers.ModelSerializer):
     """Serializer for ProductImage model."""
+    image_url = serializers.SerializerMethodField()
     
     class Meta:
         model = ProductImage
-        fields = ['id', 'image', 'alt_text', 'is_primary', 'order']
+        fields = ['id', 'image', 'image_url', 'alt_text', 'is_primary', 'order']
         read_only_fields = ['id']
+    
+    def get_image_url(self, obj):
+        request = self.context.get('request')
+        if obj.image:
+            if request:
+                return request.build_absolute_uri(obj.image.url)
+            return obj.image.url
+        # Return placeholder image if no image is set
+        if request:
+            return request.build_absolute_uri('/static/images/placeholder-product.jpg')
+        return '/static/images/placeholder-product.jpg'
 
 
 class ProductReviewSerializer(serializers.ModelSerializer):
@@ -51,12 +85,16 @@ class ProductListSerializer(serializers.ModelSerializer):
     
     def get_primary_image(self, obj):
         primary = obj.images.filter(is_primary=True).first()
-        if primary:
+        if primary and primary.image:
             request = self.context.get('request')
             if request:
                 return request.build_absolute_uri(primary.image.url)
             return primary.image.url
-        return None
+        # Return placeholder image if no primary image is set
+        request = self.context.get('request')
+        if request:
+            return request.build_absolute_uri('/static/images/placeholder-product.jpg')
+        return '/static/images/placeholder-product.jpg'
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):

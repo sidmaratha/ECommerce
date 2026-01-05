@@ -1,5 +1,9 @@
 from django.urls import path
 from .views import (
+    BannerListView,
+    BannerCreateView,
+    BannerUpdateView,
+    BannerDeleteView,
     CategoryListView,
     CategoryDetailView,
     ProductListView,
@@ -13,6 +17,12 @@ from .views import (
 app_name = 'products'
 
 urlpatterns = [
+    # Banners
+    path('banners/', BannerListView.as_view(), name='banner-list'),
+    path('banners/create/', BannerCreateView.as_view(), name='banner-create'),
+    path('banners/<int:pk>/update/', BannerUpdateView.as_view(), name='banner-update'),
+    path('banners/<int:pk>/delete/', BannerDeleteView.as_view(), name='banner-delete'),
+    
     # Categories
     path('categories/', CategoryListView.as_view(), name='category-list'),
     path('categories/<slug:slug>/', CategoryDetailView.as_view(), name='category-detail'),

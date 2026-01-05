@@ -3,6 +3,30 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from decimal import Decimal
 
 
+class Banner(models.Model):
+    """
+    Homepage banner model for image slider.
+    """
+    title = models.CharField(max_length=200)
+    subtitle = models.CharField(max_length=300, blank=True)
+    image = models.ImageField(upload_to='banners/')
+    link = models.URLField(blank=True, null=True)
+    button_text = models.CharField(max_length=50, default='Shop Now')
+    is_active = models.BooleanField(default=True)
+    banner_order = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        db_table = 'banners'
+        verbose_name = 'Banner'
+        verbose_name_plural = 'Banners'
+        ordering = ['banner_order', 'created_at']
+    
+    def __str__(self):
+        return self.title
+
+
 class Category(models.Model):
     """
     Product category model.

@@ -3,8 +3,9 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Q, Avg, Count
-from .models import Category, Product, ProductImage, ProductReview
+from .models import Category, Product, ProductImage, ProductReview, Banner
 from .serializers import (
+    BannerSerializer,
     CategorySerializer,
     ProductListSerializer,
     ProductDetailSerializer,
@@ -12,6 +13,60 @@ from .serializers import (
     ProductReviewSerializer,
     ProductReviewCreateSerializer
 )
+
+
+class BannerListView(generics.ListAPIView):
+    """
+    List all active banners for homepage slider.
+    Public access.
+    """
+    queryset = Banner.objects.filter(is_active=True).order_by('banner_order', 'created_at')
+    serializer_class = BannerSerializer
+    permission_classes = [permissions.AllowAny]
+
+
+class BannerCreateView(generics.CreateAPIView):
+    """
+    Create a new banner.
+    Admin only.
+    """
+    queryset = Banner.objects.all()
+    serializer_class = BannerSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_permissions(self):
+        if self.request.user.is_admin:
+            return [permissions.IsAuthenticated()]
+        return [permissions.IsAdminUser()]
+
+
+class BannerUpdateView(generics.UpdateAPIView):
+    """
+    Update a banner.
+    Admin only.
+    """
+    queryset = Banner.objects.all()
+    serializer_class = BannerSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_permissions(self):
+        if self.request.user.is_admin:
+            return [permissions.IsAuthenticated()]
+        return [permissions.IsAdminUser()]
+
+
+class BannerDeleteView(generics.DestroyAPIView):
+    """
+    Delete a banner.
+    Admin only.
+    """
+    queryset = Banner.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_permissions(self):
+        if self.request.user.is_admin:
+            return [permissions.IsAuthenticated()]
+        return [permissions.IsAdminUser()]
 
 
 class CategoryListView(generics.ListAPIView):
