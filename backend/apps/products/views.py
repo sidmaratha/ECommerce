@@ -99,13 +99,18 @@ class ProductListView(generics.ListAPIView):
     serializer_class = ProductListSerializer
     permission_classes = [permissions.AllowAny]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['category', 'is_featured']
+    filterset_fields = ['is_featured']
     search_fields = ['name', 'description', 'sku']
     ordering_fields = ['price', 'created_at', 'name']
     ordering = ['-created_at']
     
     def get_queryset(self):
         queryset = super().get_queryset()
+        
+        # Filter by category slug
+        category_slug = self.request.query_params.get('category')
+        if category_slug:
+            queryset = queryset.filter(category__slug=category_slug)
         
         # Filter by price range
         min_price = self.request.query_params.get('min_price')
