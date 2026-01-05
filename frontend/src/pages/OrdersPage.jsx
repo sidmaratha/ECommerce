@@ -19,9 +19,11 @@ const OrdersPage = () => {
   const fetchOrders = async () => {
     try {
       const response = await api.get('/orders/')
-      setOrders(response.data)
+      // Ensure we always have an array
+      setOrders(Array.isArray(response.data) ? response.data : [])
     } catch (error) {
       console.error('Error fetching orders:', error)
+      setOrders([]) // Ensure orders is always an array
     } finally {
       setLoading(false)
     }
@@ -43,11 +45,11 @@ const OrdersPage = () => {
     <div className="orders-page">
       <div className="container">
         <h1>My Orders</h1>
-        {orders.length === 0 ? (
+        {Array.isArray(orders) && orders.length === 0 ? (
           <p>You have no orders yet.</p>
         ) : (
           <div className="orders-list">
-            {orders.map((order) => (
+            {Array.isArray(orders) && orders.map((order) => (
               <div key={order.id} className="order-card">
                 <div className="order-header">
                   <div>

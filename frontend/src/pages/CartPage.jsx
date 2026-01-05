@@ -43,7 +43,7 @@ const CartPage = () => {
 
   if (loading) return <div className="loading">Loading...</div>
 
-  if (items.length === 0) {
+  if (!Array.isArray(items) || items.length === 0) {
     return (
       <div className="cart-page">
         <div className="container">
@@ -63,7 +63,7 @@ const CartPage = () => {
         <h1>Your Cart</h1>
         <div className="cart-content">
           <div className="cart-items">
-            {items.map((item) => (
+            {Array.isArray(items) && items.map((item) => (
               <div key={item.id} className="cart-item">
                 {item.product?.primary_image && (
                   <img

@@ -28,9 +28,11 @@ const ProfilePage = () => {
   const fetchAddresses = async () => {
     try {
       const response = await api.get('/users/addresses/')
-      setAddresses(response.data)
+      // Ensure we always have an array
+      setAddresses(Array.isArray(response.data) ? response.data : [])
     } catch (error) {
       console.error('Error fetching addresses:', error)
+      setAddresses([]) // Ensure addresses is always an array
     }
   }
 
@@ -161,7 +163,7 @@ const ProfilePage = () => {
             )}
 
             <div className="addresses-list">
-              {addresses.map((address) => (
+              {Array.isArray(addresses) && addresses.map((address) => (
                 <div key={address.id} className="address-card">
                   <div className="address-header">
                     <strong>{address.address_type}</strong>
