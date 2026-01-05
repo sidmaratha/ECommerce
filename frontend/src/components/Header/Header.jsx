@@ -22,6 +22,7 @@ const Header = () => {
         </Link>
         <nav className="nav">
           <Link to="/products">Products</Link>
+          <Link to="/admin/login" className="admin-link">Admin</Link>
           {isAuthenticated ? (
             <>
               <Link to="/orders">Orders</Link>

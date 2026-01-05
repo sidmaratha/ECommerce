@@ -6,7 +6,7 @@ const AdminRoute = ({ children }) => {
   const { isAuthenticated, user } = useSelector((state) => state.auth)
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />
+    return <Navigate to="/admin/login" replace />
   }
 
   if (user?.role !== 'admin' && !user?.is_superuser) {
