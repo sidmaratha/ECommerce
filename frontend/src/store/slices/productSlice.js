@@ -60,7 +60,8 @@ const productSlice = createSlice({
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.loading = false
-        state.products = action.payload.results || action.payload
+        state.products = Array.isArray(action.payload.results || action.payload) ? 
+          (action.payload.results || action.payload) : []
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false
@@ -79,7 +80,11 @@ const productSlice = createSlice({
         state.error = action.payload
       })
       .addCase(fetchCategories.fulfilled, (state, action) => {
-        state.categories = action.payload
+        state.categories = Array.isArray(action.payload) ? action.payload : []
+      })
+      .addCase(fetchCategories.rejected, (state, action) => {
+        state.error = action.payload
+        state.categories = []
       })
   },
 })

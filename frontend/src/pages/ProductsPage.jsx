@@ -52,7 +52,7 @@ const ProductsPage = () => {
                 onChange={handleFilterChange}
               >
                 <option value="">All Categories</option>
-                {categories.map((cat) => (
+                {Array.isArray(categories) && categories.map((cat) => (
                   <option key={cat.id} value={cat.id}>
                     {cat.name}
                   </option>
@@ -85,7 +85,7 @@ const ProductsPage = () => {
               <div className="loading">Loading...</div>
             ) : (
               <div className="products-grid">
-                {products.map((product) => (
+                {Array.isArray(products) && products.map((product) => (
                   <Link
                     key={product.id}
                     to={`/products/${product.slug}`}
